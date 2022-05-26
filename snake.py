@@ -31,6 +31,7 @@ snake.shape("square")
 snake.color("turquoise")
 snake.direction = "Up"
 
+
 turtle.register_shape("food.gif") #Add food picture
 food = turtle.clone()
 food.shape("food.gif")
@@ -82,6 +83,22 @@ def remove_tail():
     old_stamp = stamp_list.pop(0) #Pop last piece of tail from the list
     snake.clearstamp(old_stamp) #Erase last piece of tail
     pos_list.pop(0) #Remove last piece of tail's position
+
+
+#Draw a snake at the start of the game with a for loop TODO: Make this a function
+for b in range(START_LENGTH) :
+    x_pos=snake.pos()[0] #Get x-position with snake.pos()[0]
+    y_pos=snake.pos()[1] 
+
+    #Add SQUARE_SIZE to x_pos. Where does x_pos point to now?    
+    # You're RIGHT!
+    x_pos+=SQUARE_SIZE
+
+    snake.goto(x_pos,y_pos) #Move snake to new (x,y)
+   
+    #Now draw the new snake part on the screen (hint, you have a 
+    #function to do this
+    new_stamp()
 
 
 def up():

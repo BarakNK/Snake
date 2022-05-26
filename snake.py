@@ -31,6 +31,26 @@ snake.shape("square")
 snake.color("turquoise")
 snake.direction = "Up"
 
+
+def new_stamp():
+    """
+    This function draws a part of the snake on the screen   
+    """
+    snake_pos = snake.pos() #Get snake’s position
+    pos_list.append(snake_pos) 
+    stamp_ID = snake.stamp() #Set a stamp at the snake’s position and store its ID
+    stamp_list.append(stamp_ID)
+
+
+def remove_tail():
+    """
+    This function removes the last part of the snake as it moves forward
+    """
+    old_stamp = stamp_list.pop(0) #Pop last piece of tail from the list
+    snake.clearstamp(old_stamp) #Erase last piece of tail
+    pos_list.pop(0) #Remove last piece of tail's position
+
+
 def main():
     pass
 

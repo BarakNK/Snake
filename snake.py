@@ -2,12 +2,12 @@ import turtle
 import random
 
 turtle.bgcolor("black")
-turtle.tracer(1,0) #This helps the turtle move more smoothly
+turtle.tracer(1, 0) #This helps the turtle move more smoothly
 turtle.penup()
 turtle.hideturtle()
 
-SIZE_X=800
-SIZE_Y=500
+SIZE_X = 800
+SIZE_Y = 500
 turtle.setup(SIZE_X, SIZE_Y)
 
 UP_EDGE = 250
@@ -19,13 +19,13 @@ SQUARE_SIZE = 20
 START_LENGTH = 8
 TIME_STEP = 100
 
-#Initialize lists
+# Initialize lists
 pos_list = []
 stamp_list = []
 food_pos = []
 food_stamps = []
 
-#Creating the snake
+# Creating the snake
 snake = turtle.clone()
 snake.shape("square")
 snake.color("turquoise")
@@ -50,6 +50,33 @@ def remove_tail():
     snake.clearstamp(old_stamp) #Erase last piece of tail
     pos_list.pop(0) #Remove last piece of tail's position
 
+
+def up():
+    snake.direction = "Up"
+    print("You pressed the up key!")
+
+
+def down():
+    snake.direction = "Down"
+    print("You pressed the down key")
+
+
+def left():
+    snake.direction = "Left"
+    print("You pressed the left key")
+
+
+def right():
+    snake.direction = "Right"
+    print("You pressed the right key")
+
+
+# Create listeners for keyboard input
+turtle.onkeypress(up, "Up")
+turtle.onkeypress(down, "Down")
+turtle.onkeypress(left, "Left")
+turtle.onkeypress(right, "Right")
+turtle.listen()
 
 def main():
     pass

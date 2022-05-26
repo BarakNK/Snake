@@ -36,14 +36,34 @@ food = turtle.clone()
 food.shape("food.gif")
 
 #Locations of first food stamps
-food_pos = [(100,100), (-100,100), (-100,-100), (100,-100)]
+food_positions = [(100,100), (-100,100), (-100,-100), (100,-100)]
 food_stamps = []
 #Stamping the first food stamps. #TODO: Make this a function later on
-for this_food_pos in food_pos :
+for this_food_pos in food_positions:
     food.goto(this_food_pos)
     f_s=food.stamp()
     food_stamps.append(f_s)
     food.hideturtle()
+
+def make_food():
+    """
+    This function creates a new food stamp and places it on the screen
+    """
+    min_x=-int(SIZE_X/2/SQUARE_SIZE)+1
+    max_x=int(SIZE_X/2/SQUARE_SIZE)-1
+    min_y=-int(SIZE_Y/2/SQUARE_SIZE)+1
+    max_y=int(SIZE_Y/2/SQUARE_SIZE)-1
+    
+    #Pick a random position that is multiple of SQUARE_SIZE (so that the food will fit in the grid)
+    food_x = random.randint(min_x,max_x)*SQUARE_SIZE
+    food_y = random.randint(min_y,max_y)*SQUARE_SIZE
+
+    food.goto(food_x,food_y)
+    food_position=food.pos()
+    food_positions.append(food_position)
+    new_food_stamp=food.stamp()
+    food_stamps.append(new_food_stamp)
+
 
 def new_stamp():
     """
@@ -90,6 +110,7 @@ turtle.onkeypress(down, "Down")
 turtle.onkeypress(left, "Left")
 turtle.onkeypress(right, "Right")
 turtle.listen()
+
 
 def main():
     pass

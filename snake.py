@@ -31,6 +31,19 @@ snake.shape("square")
 snake.color("turquoise")
 snake.direction = "Up"
 
+turtle.register_shape("food.gif") #Add food picture
+food = turtle.clone()
+food.shape("food.gif")
+
+#Locations of first food stamps
+food_pos = [(100,100), (-100,100), (-100,-100), (100,-100)]
+food_stamps = []
+#Stamping the first food stamps. #TODO: Make this a function later on
+for this_food_pos in food_pos :
+    food.goto(this_food_pos)
+    f_s=food.stamp()
+    food_stamps.append(f_s)
+    food.hideturtle()
 
 def new_stamp():
     """

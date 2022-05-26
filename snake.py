@@ -1,3 +1,5 @@
+import turtle
+
 def main():
     pass
 

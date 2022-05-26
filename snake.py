@@ -18,11 +18,12 @@ LEFT_EDGE = -400
 SQUARE_SIZE = 20
 START_LENGTH = 8
 TIME_STEP = 100
+NUM_FOOD = 6
 
-# Initialize lists
+# Initialize lists for the snake and for the food
 pos_list = []
 stamp_list = []
-food_pos = []
+food_positions = []
 food_stamps = []
 
 # Creating the snake
@@ -31,38 +32,29 @@ snake.shape("square")
 snake.color("turquoise")
 snake.direction = "Up"
 
-
+#Create food
 turtle.register_shape("food.gif") #Add food picture
 food = turtle.clone()
 food.shape("food.gif")
 
-#Locations of first food stamps
-food_positions = [(100,100), (-100,100), (-100,-100), (100,-100)]
-food_stamps = []
-#Stamping the first food stamps. #TODO: Make this a function later on
-for this_food_pos in food_positions:
-    food.goto(this_food_pos)
-    f_s=food.stamp()
-    food_stamps.append(f_s)
-    food.hideturtle()
 
 def make_food():
     """
     This function creates a new food stamp and places it on the screen
     """
-    min_x=-int(SIZE_X/2/SQUARE_SIZE)+1
-    max_x=int(SIZE_X/2/SQUARE_SIZE)-1
-    min_y=-int(SIZE_Y/2/SQUARE_SIZE)+1
-    max_y=int(SIZE_Y/2/SQUARE_SIZE)-1
+    min_x = -int(SIZE_X/2/SQUARE_SIZE)+1
+    max_x = int(SIZE_X/2/SQUARE_SIZE)-1
+    min_y = -int(SIZE_Y/2/SQUARE_SIZE)+1
+    max_y = int(SIZE_Y/2/SQUARE_SIZE)-1
     
     #Pick a random position that is multiple of SQUARE_SIZE (so that the food will fit in the grid)
-    food_x = random.randint(min_x,max_x)*SQUARE_SIZE
-    food_y = random.randint(min_y,max_y)*SQUARE_SIZE
+    food_x = random.randint(min_x, max_x)*SQUARE_SIZE
+    food_y = random.randint(min_y, max_y)*SQUARE_SIZE
 
-    food.goto(food_x,food_y)
-    food_position=food.pos()
+    food.goto(food_x, food_y)
+    food_position = food.pos()
     food_positions.append(food_position)
-    new_food_stamp=food.stamp()
+    new_food_stamp = food.stamp()
     food_stamps.append(new_food_stamp)
 
 
@@ -85,40 +77,33 @@ def remove_tail():
     pos_list.pop(0) #Remove last piece of tail's position
 
 
-#Draw a snake at the start of the game with a for loop TODO: Make this a function
-for b in range(START_LENGTH) :
-    x_pos=snake.pos()[0] #Get x-position with snake.pos()[0]
-    y_pos=snake.pos()[1] 
+def init_snake():
+    """
+    This function initializes the snake, drawing the snake
+    """
+    for i in range(START_LENGTH):
+        snake_position = snake.pos()
+        x_pos = snake_position[0] + SQUARE_SIZE #To move the snake forward
+        y_pos = snake_position[1] 
 
-    #Add SQUARE_SIZE to x_pos. Where does x_pos point to now?    
-    # You're RIGHT!
-    x_pos+=SQUARE_SIZE
-
-    snake.goto(x_pos,y_pos) #Move snake to new (x,y)
-   
-    #Now draw the new snake part on the screen (hint, you have a 
-    #function to do this
-    new_stamp()
+        snake.goto(x_pos, y_pos)
+        new_stamp()
 
 
 def up():
     snake.direction = "Up"
-    print("You pressed the up key!")
 
 
 def down():
     snake.direction = "Down"
-    print("You pressed the down key")
 
 
 def left():
     snake.direction = "Left"
-    print("You pressed the left key")
 
 
 def right():
     snake.direction = "Right"
-    print("You pressed the right key")
 
 
 # Create listeners for keyboard input
@@ -129,8 +114,76 @@ turtle.onkeypress(right, "Right")
 turtle.listen()
 
 
+def move_snake():
+    """
+    This function moves the snake forward, and checks if it has eaten food or if it has hit the wall or itself
+    """
+    #Move the snake forward
+    snake_pos = snake.pos()
+    x_pos = snake_pos[0]
+    y_pos = snake_pos[1]
+    
+    if snake.direction == "Up":
+        snake.goto(x_pos, y_pos + SQUARE_SIZE)
+
+    elif snake.direction == "Down":
+        snake.goto(x_pos, y_pos - SQUARE_SIZE)
+
+    elif snake.direction == "Left":
+        snake.goto(x_pos - SQUARE_SIZE, y_pos)
+
+    elif snake.direction == "Right":
+        snake.goto(x_pos + SQUARE_SIZE, y_pos)
+
+    new_snake_pos = snake.pos()
+
+    #If snake is on top of food item
+    if new_snake_pos in food_positions:
+        food_index = food_positions.index(new_snake_pos)
+        food.clearstamp(food_stamps[food_index]) #Remove eaten food stamp
+        food_positions.pop(food_index) #Remove eaten food position
+        food_stamps.pop(food_index) #Remove eaten food stamp from the list
+
+    else:
+        remove_tail()
+
+    #Check if snake has hit itself
+    if new_snake_pos in pos_list:
+        print("Your snake ate itself! Game over!")
+        quit()
+
+    new_stamp()
+
+    new_x_pos = new_snake_pos[0]
+    new_y_pos = new_snake_pos[1]
+
+    #Check if snake has hit the wall
+    if new_x_pos >= RIGHT_EDGE:
+         print("You hit the right edge! Game over!")
+         quit()
+
+    if new_y_pos <= DOWN_EDGE:
+        print("You hit the bottom edge! Game over!")
+        quit()
+
+    if new_x_pos <= LEFT_EDGE:
+        print("You hit the left edge! Game over!")
+        quit()
+
+    if new_y_pos >= UP_EDGE:
+        print("You hit the top edge! Game over!")
+        quit()
+
+    if len(food_stamps) < NUM_FOOD:
+        make_food()
+
+    turtle.ontimer(move_snake, TIME_STEP)
+
+
 def main():
-    pass
+    init_snake()
+    move_snake()
+    turtle.mainloop()
 
 if __name__ == '__main__':
     main()
